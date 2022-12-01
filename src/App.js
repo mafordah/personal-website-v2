@@ -1,9 +1,10 @@
 import './App.css';
-import { Suspense, useMemo, useRef } from "react";
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Suspense } from "react";
+import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment } from "@react-three/drei";
 import Model from "./Model";
 import Bubbles from './Bubbles';
+import Ground from './Ground';
 
 
 // import vertexShader from './vertexShader';
@@ -54,10 +55,10 @@ function App() {
   return (
     <div id="canvas-container">
       <Suspense fallback={<span>loading...</span>}>
-        <Canvas>
-          <ambientLight intensity={0.25} />
-          <spotLight intensity={1} angle={0.2} penumbra={1} position={[30, 30, 30]} castShadow shadow-mapSize={[512, 512]} />
-          <directionalLight intensity={3} position={[10, 10, -10]} color="orange" />
+        <Canvas camera={{ position: [0, 0.3, 4.5]}}>
+          {/* <ambientLight intensity={0.25} /> */}
+          <spotLight intensity={0.5} angle={0.2} penumbra={1} position={[30, 30, 30]} castShadow shadow-mapSize={[512, 512]} />
+          <directionalLight intensity={2} position={[10, 10, -10]} color="orange" />
 
           {/* <mesh position={[0.1, -0.5, 0]} rotation={[Math.PI / -2, 0, 0]}>
           <planeGeometry args={[6, 3]} />
@@ -78,8 +79,9 @@ function App() {
           />
           {/* <MovingPlane /> */}
           <Bubbles />
+          {/* <Ground /> */}
           <OrbitControls />
-          <Environment preset="night" background blur={1} />
+          <Environment preset="warehouse" background blur={1} />
 
         </Canvas>
       </Suspense>

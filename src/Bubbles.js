@@ -2,30 +2,58 @@ import { MathUtils } from 'three'
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Instance, Instances } from '@react-three/drei'
+import { Vector3 } from 'three'
 
 //Bubble instance code referenced from https://codesandbox.io/s/hi-key-bubbles-i6t0j?file=/src/App.js
 
-const particles = Array.from({ length: 80 }, () => ({
+const particles = Array.from({ length: 60 }, () => ({
     factor: MathUtils.randInt(20, 50),
     speed: MathUtils.randFloat(0.01, 0.25),
     xFactor: MathUtils.randFloatSpread(10),
-    yFactor: MathUtils.randFloatSpread(1),
+    yFactor: MathUtils.randFloatSpread(3),
     zFactor: MathUtils.randFloatSpread(3)
-}))
+}));
+
+const vec = new Vector3()
 
 function Bubble({ factor, speed, xFactor, yFactor, zFactor }) {
-    const ref = useRef()
-    const [visible, setVisible] = useState(true)
+    const ref = useRef();
+    const [move, setMove] = useState(0);
+    const delta = MathUtils.randFloat(0.001, 0.005);
+
     useFrame((state) => {
-        const t = factor + state.clock.elapsedTime * (speed / 2)
-        ref.current.scale.setScalar(visible? Math.max(0.4, Math.cos(t) * 0.8) : 0)
-        ref.current.position.set(
+        const t = factor + state.clock.elapsedTime * (speed / 2);
+
+        vec.set(
             Math.cos(t) + Math.sin(t * 1) / 100 + xFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 1) * factor) / 100,
             Math.sin(t) + Math.cos(t * 2) / 100 + yFactor + Math.sin((t / 100) * factor) + (Math.cos(t * 2) * factor) / 100,
             Math.sin(t) + Math.cos(t * 2) / 100 + zFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 3) * factor) / 100
-        )
+        );
+        
+        ref.current.scale.setScalar(Math.max(0.3, Math.cos(t) * 0.7));
+
+        if (move == 0) { //Initial state
+            ref.current.position.set(
+                Math.cos(t) + Math.sin(t * 1) / 100 + xFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 1) * factor) / 100,
+                Math.sin(t) + Math.cos(t * 2) / 100 + yFactor + Math.sin((t / 100) * factor) + (Math.cos(t * 2) * factor) / 100,
+                Math.sin(t) + Math.cos(t * 2) / 100 + zFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 3) * factor) / 100
+            );
+        } else if (move == 1) { //Move to tub
+            ref.current.position.set(xFactor * 0.4, -3, zFactor * 0.5);
+            setMove(2);
+        } else if (move == 2) { //Transition
+            ref.current.position.y += delta;
+            if (ref.current.position.y >= 3){
+                setMove(3);
+            }
+        } else if (move == 3) { //To initial state
+            ref.current.position.lerp(vec, 0.0005);
+        }
+
+        console.log();
     })
-    return <Instance ref={ref} onClick={(e) => setVisible(false) } />
+
+    return <Instance ref={ref} onPointerDown={(e) => { setMove(1) }} />
 }
 
 export default function Bubbles() {
@@ -46,26 +74,9 @@ export default function Bubbles() {
                 ior={1.25}
             />
             {particles.map((data, i) => (
-                <Bubble key={i} {...data}/>
+                <Bubble key={i} {...data} />
             ))}
         </Instances>
     )
 }
-
-
-
-// import Bubble from './Bubble';
-
-// export default function Bubbles(props) {
-//     const positions = [...Array(24)].map(() => ({
-//         position: [(Math.random() - 0.5) * 10, Math.random() * 5, (Math.random() - 0.5) * 10],
-//     }))
-//     return (
-//         <>
-//             {positions.map((props, i) => (
-//                 <Bubble key={i} onClick={(e) => console.log(i)} {...props} />
-//             ))}
-//         </>
-//     )
-// }
 
