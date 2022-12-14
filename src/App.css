@@ -6,9 +6,42 @@ body {
   text-align: center;
 }
 
-#canvas-container {
+#main {
   width: 100vw;
   height: 100vh;
+
+}
+
+#logo{
+  position: absolute;
+  top: 20%;
+  width:100vw;
+  text-align: center;
+}
+
+#logo img {
+  padding: 30px;
+  width: 200px;
+}
+
+#copy{
+  position: absolute;
+  bottom: 0;
+  width:100vw;
+  text-align: center;
+  padding-bottom: 10px;
+  color: rgba(242, 241, 238, 0.25);
+  font-size: smaller;
+  text-transform: uppercase;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 
 /* .App-logo {
