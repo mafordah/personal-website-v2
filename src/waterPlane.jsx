@@ -138,7 +138,7 @@ const customShader = {
 
             // Add the overall displacement sum (tuning with a division)
             // to the Y of the current vertex position
-            float z = position.z + sum/200.0;
+            float z = position.z + sum/300.0;
 
             // And finally the usual matrix multiplications
             vec4 modelView = modelViewMatrix * vec4( position.x, position.y, z, 1.0);
@@ -157,7 +157,7 @@ export const WaterPlane = () => {
     }, []);
 
     const OBC = useCallback((shader) => {
-        console.log({ shader });
+        // console.log({ shader });
         // setShaderRef(shader);
         shader.uniforms = { ...shader.uniforms, ...customShader.uniforms };
 
@@ -212,7 +212,7 @@ export const WaterPlane = () => {
                 if (position.length === 100) {
                     position.unshift({
                         origin: e.intersections[0].point,
-                        radius: 50.0
+                        radius: 100.0
                     });
                 }
             }}

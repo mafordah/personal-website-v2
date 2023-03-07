@@ -6,12 +6,12 @@ import { Vector3 } from 'three'
 
 //Bubble instance code referenced from https://codesandbox.io/s/hi-key-bubbles-i6t0j?file=/src/App.js
 
-const particles = Array.from({ length: 500 }, () => ({
+const particles = Array.from({ length: 1000 }, () => ({
     factor: MathUtils.randInt(20, 50),
     speed: MathUtils.randFloat(0.01, 0.25),
-    xFactor: MathUtils.randFloatSpread(5),
-    yFactor: MathUtils.randFloatSpread(0.5),
-    zFactor: MathUtils.randFloatSpread(2.2)
+    xFactor: MathUtils.randFloatSpread(4.9),
+    yFactor: MathUtils.randFloatSpread(1),
+    zFactor: MathUtils.randFloatSpread(2)
 }));
 
 // const vec = new Vector3()
@@ -28,7 +28,7 @@ function FoamBubble({ factor, speed, xFactor, yFactor, zFactor }) {
         //     Math.sin(t) + Math.cos(t * 2) / 100 + zFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 3) * factor) / 100
         // );
 
-        ref.current.scale.setScalar(Math.max(0.3, Math.cos(t) * 0.5));
+        ref.current.scale.setScalar(Math.max(0.3, Math.cos(t) * 0.7));
         ref.current.position.set(xFactor, yFactor , zFactor);
 
     })
@@ -39,7 +39,7 @@ function FoamBubble({ factor, speed, xFactor, yFactor, zFactor }) {
 export default function Foam() {
     const ref = useRef()
     return (
-        <Instances limit={particles.length} ref={ref} position={[0.2, -0.3, 0]}>
+        <Instances limit={particles.length} ref={ref} position={[0.2, -0.8, 0]}>
             <sphereGeometry args={[0.35, 30, 30]} />
             <meshPhysicalMaterial
                 color={"white"}
