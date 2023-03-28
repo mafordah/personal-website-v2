@@ -1,7 +1,7 @@
 import { MathUtils } from 'three'
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Instance, Instances } from '@react-three/drei'
+import { Instance, Instances, MeshTransmissionMaterial } from '@react-three/drei'
 import { Vector3 } from 'three'
 
 //Bubble instance code adapted from https://codesandbox.io/s/hi-key-bubbles-i6t0j?file=/src/App.js
@@ -31,7 +31,7 @@ function Bubble({ factor, speed, scale, xFactor, yFactor, zFactor }) {
             Math.sin(t) + Math.cos(t * 2) / 100 + yFactor + Math.sin((t / 100) * factor) + (Math.cos(t * 2) * factor) / 100,
             Math.sin(t) + Math.cos(t * 2) / 100 + zFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 3) * factor) / 100
         );
-        
+
 
         if (move === 0) { //Initial state
             ref.current.scale.setScalar(scale);
@@ -46,7 +46,7 @@ function Bubble({ factor, speed, scale, xFactor, yFactor, zFactor }) {
             setMove(2);
         } else if (move === 2) { //Transition
             ref.current.position.y += delta;
-            if (ref.current.position.y >= 2.2){
+            if (ref.current.position.y >= 2.2) {
                 setMove(3);
             }
         } else if (move === 3) { //To initial state
@@ -56,7 +56,7 @@ function Bubble({ factor, speed, scale, xFactor, yFactor, zFactor }) {
         console.log();
     })
 
-    return <Instance ref={ref} onPointerDown={(e) => {  e.stopPropagation(); setMove(1); }} />
+    return <Instance ref={ref} onPointerDown={(e) => { e.stopPropagation(); setMove(1); }} />
 }
 
 export default function Bubbles() {
@@ -64,18 +64,19 @@ export default function Bubbles() {
     return (
         <Instances limit={particles.length} ref={ref} position={[0, 2, 0]}>
             <sphereGeometry args={[0.35, 30, 30]} />
-            <meshPhysicalMaterial
-                color={"white"}
-                opacity={0.9}
-                transparent={true}
-                depthWrite={true}
+            <MeshTransmissionMaterial
+                // color={"white"}
+                // resolution={768}
+                iridescence={1}
                 transmission={1}
                 thickness={0.1}
-                metalness={0}
-                roughness={0.2}
-                envMapIntensity={15}
-                ior={1.25}
+                anisotropy={0.5}
+                distortion={1}
+                chromaticAberration={0.5}
+                roughness={0.15}
+                envMapIntensity={3}
             />
+
             {particles.map((data, i) => (
                 <Bubble key={i} {...data} />
             ))}

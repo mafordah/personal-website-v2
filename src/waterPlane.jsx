@@ -1,5 +1,5 @@
 //Water displacement adapted from Richard Thompson @ https://codesandbox.io/s/zen-matan-np1ijb?from-embed=&file=/src/plane.jsx:687-710
-import React, { useRef, useEffect, useCallback, useMemo } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -150,7 +150,7 @@ const customShader = {
 // START OF COMPONENT
 export const WaterPlane = () => {
     const increment = 1.0;
-    const ref = useRef();
+    // const ref = useRef();
 
     useEffect(() => {
         setInterval(calc, 10);
