@@ -6,7 +6,7 @@ import { Vector3 } from 'three'
 
 //Bubble instance code adapted from https://codesandbox.io/s/hi-key-bubbles-i6t0j?file=/src/App.js
 
-const particles = Array.from({ length: 60 }, () => ({
+const particles = Array.from({ length: 80 }, () => ({
     factor: MathUtils.randInt(20, 50),
     speed: MathUtils.randFloat(0.01, 0.25),
     scale: MathUtils.randFloat(0.1, 0.8),
@@ -73,7 +73,7 @@ export default function Bubbles() {
                 anisotropy={0.5}
                 distortion={1}
                 chromaticAberration={0.5}
-                roughness={0.15}
+                roughness={0.2}
                 envMapIntensity={3}
             />
 
