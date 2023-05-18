@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Instance, Instances, MeshTransmissionMaterial } from '@react-three/drei'
 import { Vector3 } from 'three'
+import { gsap } from "gsap";
 
 //Bubble instance code adapted from https://codesandbox.io/s/hi-key-bubbles-i6t0j?file=/src/App.js
 
@@ -15,8 +16,7 @@ const particles = Array.from({ length: 80 }, () => ({
     zFactor: MathUtils.randFloatSpread(5)
 }));
 
-const vec = new Vector3()
-
+const pos = new Vector3();
 
 function Bubble({ factor, speed, scale, xFactor, yFactor, zFactor }) {
     const ref = useRef();
@@ -26,7 +26,7 @@ function Bubble({ factor, speed, scale, xFactor, yFactor, zFactor }) {
     useFrame((state) => {
         const t = factor + state.clock.elapsedTime * (speed / 2);
 
-        vec.set(
+        pos.set(
             Math.cos(t) + Math.sin(t * 1) / 100 + xFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 1) * factor) / 100,
             Math.sin(t) + Math.cos(t * 2) / 100 + yFactor + Math.sin((t / 100) * factor) + (Math.cos(t * 2) * factor) / 100,
             Math.sin(t) + Math.cos(t * 2) / 100 + zFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 3) * factor) / 100
@@ -40,8 +40,9 @@ function Bubble({ factor, speed, scale, xFactor, yFactor, zFactor }) {
                 Math.sin(t) + Math.cos(t * 2) / 100 + yFactor + Math.sin((t / 100) * factor) + (Math.cos(t * 2) * factor) / 100,
                 Math.sin(t) + Math.cos(t * 2) / 100 + zFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 3) * factor) / 100
             );
-        } else if (move === 1) { //Move to tub randomly
+        } else if (move === 1) { //Move to tub randomly and grow to new size 
             ref.current.scale.setScalar(MathUtils.randFloat(0.1, 0.8));
+            gsap.from(ref.current.scale, { x: 0, y: 0, z: 0, duration: 5 });
             ref.current.position.set(MathUtils.randFloatSpread(3.2), -3.5, MathUtils.randFloatSpread(1.5));
             setMove(2);
         } else if (move === 2) { //Transition
@@ -50,7 +51,7 @@ function Bubble({ factor, speed, scale, xFactor, yFactor, zFactor }) {
                 setMove(3);
             }
         } else if (move === 3) { //To initial state
-            ref.current.position.lerp(vec, 0.00075);
+            ref.current.position.lerp(pos, 0.00075);
         }
 
         console.log();
