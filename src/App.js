@@ -25,7 +25,7 @@ function Rig(state) {
 
     } else if (state.state === "main") {
 
-      gsap.to(camera.position, { x: 0, y: 0, z: 6, duration: 1, ease: "power1.inOut" });
+      gsap.to(camera.position, { x: 0, y: 0.5, z: 6, duration: 1, ease: "power1.inOut" });
 
     }
   });
@@ -51,7 +51,8 @@ function App() {
   return (
     <div id="main">
       <Suspense fallback={<span id='loading'>loading...</span>}>
-        <Canvas camera={{ position: [0, 0, 6], fov: 65 }}>
+        
+        <Canvas camera={{ position: [0, 0.5, 6], fov: 65 }}>
           {/* <spotLight intensity={0.5} angle={0.2} penumbra={1} position={[0, 0, 0]} castShadow shadow-mapSize={[512, 512]} /> */}
           {/* <directionalLight intensity={1} position={[5, 6, 4]} color="orange" /> */}
 

@@ -63,7 +63,7 @@ function Bubble({ factor, speed, scale, xFactor, yFactor, zFactor }) {
 export default function Bubbles() {
     const ref = useRef()
     return (
-        <Instances limit={particles.length} ref={ref} position={[0, 2, 0]}>
+        <Instances limit={particles.length} ref={ref} position={[-0.5, 2, 0]}>
             <sphereGeometry args={[0.35, 30, 30]} />
             <MeshTransmissionMaterial
                 // color={"white"}
