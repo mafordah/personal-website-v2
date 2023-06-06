@@ -7,7 +7,7 @@ import { gsap } from "gsap";
 
 //Bubble instance code adapted from https://codesandbox.io/s/hi-key-bubbles-i6t0j?file=/src/App.js
 
-const particles = Array.from({ length: 80 }, () => ({
+const particles = Array.from({ length: 60 }, () => ({
     factor: MathUtils.randInt(20, 50),
     speed: MathUtils.randFloat(0.01, 0.25),
     scale: MathUtils.randFloat(0.1, 0.8),

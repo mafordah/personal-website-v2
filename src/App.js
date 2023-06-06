@@ -104,15 +104,15 @@ function App() {
             enableRotate={state === "main" ? true : false}
             // minPolarAngle={state === "main" ? Math.PI / 4 : 0}
             maxPolarAngle={Math.PI / 1.8}
-          // minAzimuthAngle={-Math.PI / 2}
-          // maxAzimuthAngle={Math.PI / 2}
+            minAzimuthAngle={-Math.PI / 4}
+            maxAzimuthAngle={Math.PI / 4}
           />
 
           <Rig state={state} />
           <Environment preset="warehouse" background blur={1} />
         </Canvas>
 
-        <div id="copy" className="noselect">&copy; {new Date().getFullYear()} Miya Fordah</div>
+        <div id="copy" className="noselect">© {new Date().getFullYear()} Miya Fordah</div>
 
       </Suspense>
 
