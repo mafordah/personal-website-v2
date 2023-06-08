@@ -1,14 +1,16 @@
 body {
-  background-color: #404040;
+  background-color: #c6c6c0;
   font-family: 'Jost', sans-serif;
 }
+
 
 .App {
   text-align: center;
 }
 
-#loading{
-  color: rgba(242, 241, 238, 0.25);
+#loading {
+  text-align: center;
+  color: #6f570a;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -17,39 +19,92 @@ body {
 #main {
   width: 100vw;
   height: 100vh;
-
 }
+
+#overlay {
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  /* animation: blur 5s ease-in 0s;
+  -webkit-animation: blur 5s ease-in 0s;
+  -moz-animation: blur 5s ease-in 0s; */
+  /* backdrop-filter: blur(5px); */
+
+  overflow: hidden;
+}
+
+/* @keyframes blur {
+  from {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    -moz-backdrop-filter: blur(5px);
+    -o-backdrop-filter: blur(5px);
+    -ms-backdrop-filter: blur(5px);
+  }
+  to {
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    -moz-backdrop-filter: blur(0px);
+    -o-backdrop-filter: blur(0px);
+    -ms-backdrop-filter: blur(0px);
+  }
+} */
 
 #main-nav {
   text-align: center;
-  font-size: 7pt;
-  line-height: 10pt;
+  font-size: 2.2rem;
+  line-height: 3.2rem;
   color: #6f570a;
-  /* color: #4e3b25 */
+  pointer-events: auto;
+  position: absolute;
+  bottom: 14%;
 }
 
-#main-nav a:hover{
+#main-nav a:hover {
   cursor: pointer;
-  text-decoration:underline;
+  text-decoration: underline;
+  color: #9b7a0f;
 }
 
+.menu {
+  position: absolute;
+  bottom: 6%;
+  pointer-events: auto;
+  stroke: #6f570a;
+  fill: none;
+  stroke-linecap: square;
+}
 
+.menu:hover {
+  cursor: pointer;
+  stroke: #9b7a0f;
+}
 
 #logo {
-  width: 75px;
+  width: 4em;
+  position: absolute;
+  top: 0;
+  margin: 2em;
+  pointer-events: auto;
 }
-
-
 
 #copy {
   position: absolute;
   bottom: 0;
-  width: 100vw;
   text-align: center;
   padding-bottom: 10px;
   color: rgba(242, 241, 238, 0.25);
   font-size: smaller;
   text-transform: uppercase;
+  pointer-events: all;
+
 }
 
 .noselect {

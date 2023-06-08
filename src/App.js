@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useRef, Suspense } from "react";
+import { useState, useRef, Suspense, useEffect, useCallback } from "react";
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, Html, Mask, useMask, } from "@react-three/drei";
 
@@ -12,9 +12,7 @@ import Logo from './Logo';
 import Bubbles from './Bubbles';
 // import Foam from './Foam';
 import { WaterPlane } from './waterPlane';
-
-// import logo from './images/logo/MF-logo-transparentCircle.svg'
-
+import logoSVG from './images/logo/MF-logo-transparentCircle.svg'
 
 
 function Rig(state) {
@@ -48,13 +46,35 @@ function App() {
     });
   }
 
+  const [toggle, setToggle] = useState(false);
+  const toggleMenu = () => {
+    setToggle(!toggle);
+  };
+
+
+  const menu = useRef();
+
+  useEffect(() => {
+    menu.current = new gsap.timeline({ paused: true })
+      .fromTo(document.getElementById('main-nav'), { y: '8em', opacity: 0, filter: 'blur(10px)' }, { y: 0, opacity: 1, duration: 0.5, filter: 'blur(0px)' })
+      .fromTo(document.getElementById('overlay'), {backdropFilter: 'blur(0px)'}, {backdropFilter: 'blur(3px)'}, "<")
+      .to(document.getElementsByClassName('upper'), { attr: { d: "M8,2 L2,8" }, x: 1, duration: 0.5, ease: "Power2.easeInOut" }, "<")
+      .to(document.getElementsByClassName('middle'), { attr: { d: "M6,5 L6,5" }, duration: 0.3, ease: "Power2.easeInOut" }, "<")
+      .to(document.getElementsByClassName('lower'), { attr: { d: "M8,8 L2,2" }, x: 1, duration: 0.5, ease: "Power2.easeInOut" }, "<")
+      .reverse();
+  }, []);
+
+  useEffect(() => {
+    menu.current.reversed(!toggle);
+  }, [toggle]);
+
   return (
     <div id="main">
       <Suspense fallback={<span id='loading'>loading...</span>}>
-        
         <Canvas camera={{ position: [0, 0.5, 6], fov: 65 }}>
           {/* <spotLight intensity={0.5} angle={0.2} penumbra={1} position={[0, 0, 0]} castShadow shadow-mapSize={[512, 512]} /> */}
           {/* <directionalLight intensity={1} position={[5, 6, 4]} color="orange" /> */}
+          <fog attach="fog" color="white" near={5} far={25} />
 
           <Tub />
           <Mask id={1} >
@@ -68,10 +88,10 @@ function App() {
             gsap.to(logo.current.position, { z: 0 });
             setState("main");
           }} >
-            <Logo />
+            {/* <Logo /> */}
           </mesh>
 
-          <Html className="content" position={[0, -1.5, 1.6]} transform castShadow >
+          {/* <Html className="content" position={[0, -1.5, 1.6]} transform castShadow >
             <nav id="main-nav">
               <a onPointerDown={() => {
                 gsap.fromTo(logo.current.rotation, { y: 0, x: 0 }, { y: Math.PI * 2, x: -Math.PI / 2.3, duration: 3, ease: "elastic.out(1, 0.35)" });
@@ -94,7 +114,7 @@ function App() {
                 setState("main");
               }}>CONTACT</a>
             </nav>
-          </Html>
+          </Html> */}
 
           <WaterPlane />
           {/* <Foam /> */}
@@ -112,13 +132,53 @@ function App() {
           <Rig state={state} />
           <Environment preset="warehouse" background blur={1} />
         </Canvas>
+        <div id="overlay">
+          <img id="logo" src={logoSVG} alt="MF logo" onPointerDown={(e) => {
+            e.stopPropagation();
+            setState("main");
+          }}/>
+          <nav id="main-nav">
+            <a onPointerDown={() => {
+              gsap.fromTo(logo.current.rotation, { y: 0, x: 0 }, { y: Math.PI * 2, x: -Math.PI / 2.3, duration: 3, ease: "elastic.out(1, 0.35)" });
+              gsap.to(logo.current.scale, { x: 0.2, y: 0.2, z: 0.2, duration: 0.25 });
+              gsap.to(logo.current.position, { z: -1.5 });
+              setState("water");
+              toggleMenu();
+            }}>ABOUT</a><br />
 
-        <div id="copy" className="noselect">© {new Date().getFullYear()} Miya Fordah</div>
+            <a onPointerDown={() => {
+              gsap.fromTo(logo.current.rotation, { y: 0, x: 0 }, { y: Math.PI * 2, x: -Math.PI / 2.3, duration: 3, ease: "elastic.out(1, 0.35)" });
+              gsap.to(logo.current.scale, { x: 0.2, y: 0.2, z: 0.2, duration: 0.25 });
+              gsap.to(logo.current.position, { z: -1.5 });
+              setState("water");
+              toggleMenu();
+            }}>WORK</a><br />
+
+            <a onPointerDown={() => {
+              gsap.fromTo(logo.current.rotation, { y: 0 }, { y: Math.PI * 2, x: 0, duration: 3, ease: "elastic.out(1, 0.35)" });
+              gsap.to(logo.current.scale, { x: 1, y: 1, z: 1, duration: 0.5 });
+              gsap.to(logo.current.position, { z: 0 });
+              setState("main");
+              toggleMenu();
+            }}>CONTACT</a>
+          </nav>
+          <svg viewBox="0 0 12 10" className="menu" height="2rem" width="2rem" onPointerDown={() => {
+            toggleMenu();
+          }}>
+            <path d="M10,2 L2,2" className="upper line" />
+            <path d="M2,5 L10,5" className="middle line" />
+            <path d="M10,8 L2,8" className="lower line" />
+          </svg>
+
+          <div id="copy" className="noselect">© {new Date().getFullYear()} Miya Fordah</div>
+        </div>
 
       </Suspense>
 
     </div>
   )
 }
+
+
 
 export default App;
