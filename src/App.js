@@ -19,7 +19,7 @@ function Rig(state) {
   useThree(({ camera }) => {
     if (state.state === "water") {
 
-      gsap.to(camera.position, { x: 0, y: 3.5, z: 0.5, duration: 1, ease: "power1.inOut" });
+      gsap.to(camera.position, { x: 0, y: 3, z: 0.01, duration: 1, ease: "power1.inOut" });
 
     } else if (state.state === "main") {
 
@@ -81,15 +81,15 @@ function App() {
             <Water />
           </Mask>
 
-          <mesh ref={logo} onPointerDown={(e) => {
+          {/* <mesh ref={logo} onPointerDown={(e) => {
             e.stopPropagation();
             gsap.fromTo(logo.current.rotation, { y: 0 }, { y: Math.PI * 2, x: 0, duration: 3, ease: "elastic.out(1, 0.3.5)" });
             gsap.to(logo.current.scale, { x: 1, y: 1, z: 1, duration: 0.5 });
             gsap.to(logo.current.position, { z: 0 });
             setState("main");
           }} >
-            {/* <Logo /> */}
-          </mesh>
+            <Logo />
+          </mesh> */}
 
           {/* <Html className="content" position={[0, -1.5, 1.6]} transform castShadow >
             <nav id="main-nav">
@@ -139,26 +139,17 @@ function App() {
           }}/>
           <nav id="main-nav">
             <a onPointerDown={() => {
-              gsap.fromTo(logo.current.rotation, { y: 0, x: 0 }, { y: Math.PI * 2, x: -Math.PI / 2.3, duration: 3, ease: "elastic.out(1, 0.35)" });
-              gsap.to(logo.current.scale, { x: 0.2, y: 0.2, z: 0.2, duration: 0.25 });
-              gsap.to(logo.current.position, { z: -1.5 });
               setState("water");
               toggleMenu();
             }}>ABOUT</a><br />
 
             <a onPointerDown={() => {
-              gsap.fromTo(logo.current.rotation, { y: 0, x: 0 }, { y: Math.PI * 2, x: -Math.PI / 2.3, duration: 3, ease: "elastic.out(1, 0.35)" });
-              gsap.to(logo.current.scale, { x: 0.2, y: 0.2, z: 0.2, duration: 0.25 });
-              gsap.to(logo.current.position, { z: -1.5 });
               setState("water");
               toggleMenu();
             }}>WORK</a><br />
 
             <a onPointerDown={() => {
-              gsap.fromTo(logo.current.rotation, { y: 0 }, { y: Math.PI * 2, x: 0, duration: 3, ease: "elastic.out(1, 0.35)" });
-              gsap.to(logo.current.scale, { x: 1, y: 1, z: 1, duration: 0.5 });
-              gsap.to(logo.current.position, { z: 0 });
-              setState("main");
+              setState("water");
               toggleMenu();
             }}>CONTACT</a>
           </nav>
@@ -170,7 +161,7 @@ function App() {
             <path d="M10,8 L2,8" className="lower line" />
           </svg>
 
-          <div id="copy" className="noselect">© {new Date().getFullYear()} Miya Fordah</div>
+          <div id="copy">© {new Date().getFullYear()} Miya Fordah</div>
         </div>
 
       </Suspense>
