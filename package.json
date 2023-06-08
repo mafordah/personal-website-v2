@@ -2,6 +2,7 @@
   "name": "personal-website-v2",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://mafordah.github.io/personal-website-v2",
   "dependencies": {
     "@react-three/drei": "^9.43.3",
     "@react-three/fiber": "^8.9.1",

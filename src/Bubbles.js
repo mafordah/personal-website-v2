@@ -66,8 +66,6 @@ export default function Bubbles() {
         <Instances limit={particles.length} ref={ref} position={[-0.5, 2, 0]}>
             <sphereGeometry args={[0.35, 30, 30]} />
             <MeshTransmissionMaterial
-                // color={"white"}
-                // resolution={768}
                 iridescence={1}
                 transmission={1}
                 thickness={0.1}
