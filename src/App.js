@@ -70,7 +70,7 @@ function App() {
 
   return (
     <div id="main">
-      <Suspense id="suspense" fallback={<img id="loading" src={loadingGIF} alt="loading image logo"/>}>
+      <Suspense id="suspense" fallback={<img id="loading" src={loadingGIF} alt="loading animation gif"/>}>
         <Canvas camera={{ position: [0, 0.5, 6], fov: 65 }}>
 
           <Tub />
