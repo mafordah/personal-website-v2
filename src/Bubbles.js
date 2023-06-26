@@ -10,7 +10,7 @@ import { gsap } from "gsap";
 const particles = Array.from({ length: 60 }, () => ({
     factor: MathUtils.randInt(20, 50),
     speed: MathUtils.randFloat(0.01, 0.25),
-    scale: MathUtils.randFloat(0.1, 0.8),
+    scale: MathUtils.randFloat(0.1, 1),
     xFactor: MathUtils.randFloatSpread(8),
     yFactor: MathUtils.randFloatSpread(1),
     zFactor: MathUtils.randFloatSpread(5)
@@ -41,7 +41,7 @@ function Bubble({ factor, speed, scale, xFactor, yFactor, zFactor }) {
                 Math.sin(t) + Math.cos(t * 2) / 100 + zFactor + Math.cos((t / 100) * factor) + (Math.sin(t * 3) * factor) / 100
             );
         } else if (move === 1) { //Move to tub randomly and grow to new size 
-            ref.current.scale.setScalar(MathUtils.randFloat(0.1, 0.8));
+            ref.current.scale.setScalar(MathUtils.randFloat(0.1, 1));
             gsap.from(ref.current.scale, { x: 0, y: 0, z: 0, duration: 5 });
             ref.current.position.set(MathUtils.randFloatSpread(3.2), -3.5, MathUtils.randFloatSpread(1.5));
             setMove(2);

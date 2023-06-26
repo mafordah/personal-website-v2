@@ -9,6 +9,7 @@ export default function Tub() {
             position = {[0, -1.8, 0]}
             scale={1}
             rotation={[0, Math.PI / -2, 0]}
+            onPointerDown={(e) => { e.stopPropagation();}}
         />
     )
 }
