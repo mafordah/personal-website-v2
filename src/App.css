@@ -10,6 +10,15 @@ body {
   font-family: 'Jost', sans-serif;
 }
 
+h1 {
+  font-weight: 400;
+  font-size: 3rem;
+  color: #9b7a0f;
+  text-transform: uppercase;
+  text-align: center;
+  /* filter: blur(10px); */
+}
+
 #root {
   width: 100%;
   height: 100%;
@@ -36,6 +45,23 @@ body {
   align-items: center;
 }
 
+#container {
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* box-shadow: 0 0 10em rgba(255, 255, 255, 1.0) inset;
+  backdrop-filter: blur(5px); */
+
+  overflow: hidden;
+}
+
 #overlay {
   position: absolute;
   top: 0;
@@ -48,10 +74,32 @@ body {
   height: 100%;
   pointer-events: none;
 
+  background-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 10em rgba(255, 255, 255, 1.0) inset;
   backdrop-filter: blur(5px);
 
   overflow: hidden;
+
+  clip-path: url(#clip);
+  /* mask:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="none"><polygon points="20,20 20,180 180,100 " fill="white"/></svg>') 0/100% 100%,
+    linear-gradient(#000, #000);
+  -webkit-mask:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" preserveAspectRatio="none"><polygon points="20,20 20,180 180,100 " fill="white"/></svg>') 0/100% 100%,
+    linear-gradient(#000, #000); */
+
+  /* mask-image: url(#draw-mask);
+  -webkit-mask-image: url(#draw-mask); */
+  /* clip-path: url(#draw-mask);
+  -webkit-clip-path: url(#draw-mask); */
+
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+}
+
+#title {
+  position: absolute;
+  top: 27%;
 }
 
 #main-nav {
@@ -63,6 +111,7 @@ body {
   position: absolute;
   bottom: 14%;
   opacity: 0;
+  display: hidden;
 }
 
 #main-nav a:hover {
@@ -89,7 +138,7 @@ body {
   width: 4em;
   position: absolute;
   top: 0;
-  margin: 2em;
+  margin: 1.6em;
   pointer-events: auto;
 }
 
@@ -101,7 +150,7 @@ body {
   color: rgba(242, 241, 238, 0.25);
   font-size: smaller;
   text-transform: uppercase;
-  pointer-events: all;
+  pointer-events: auto;
 
 }
 

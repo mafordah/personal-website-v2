@@ -20,8 +20,12 @@ function Rig(state) {
 
 
     } else if (state.state === "main") {
+      if (window.innerWidth < window.innerHeight) {
+        gsap.to(camera.position, { x: 3.5, y: 1.5, z: 4.75, duration: 1, ease: "power1.inOut" });
+      } else {
+        gsap.to(camera.position, { x: 0, y: 0.5, z: 6, duration: 1, ease: "power1.inOut" });
+      }
 
-      gsap.to(camera.position, { x: 0, y: 0.5, z: 6, duration: 1, ease: "power1.inOut" });
 
     }
   });
@@ -32,31 +36,47 @@ function Rig(state) {
 function App() {
   const [state, setState] = useState("main");
 
-  const heroTimeline = useRef();
   const menuTimeline = useRef();
   const fogTimeline = useRef();
-  const touchEvents = useRef();
+
+  // var isPointerDown = false;
+  // var polylineCount = 0;
+  // var svg;
+  // var mask;
+  // var point;
+  // var polyline;
+
+  let isPointerDown = false;
+  let svgMask;
+  let currentPolyline = [];
+  const polylines = [];
+
+
 
   useEffect(() => {
-    heroTimeline.current = new gsap.timeline()
-      .to('#overlay', { boxShadow: "0 0 10em rgba(255, 255, 255, 0.0) inset", duration: 1, ease: "none" }, "start")
-      .to('#overlay', { backdropFilter: 'blur(0px)', duration: 1.5, ease: "none" }, "start")
-
     menuTimeline.current = new gsap.timeline({ paused: true })
-      .fromTo('#main-nav', { y: '8em', opacity: 0, filter: 'blur(10px)' }, { y: 0, opacity: 1, duration: 0.5, filter: 'blur(0px)' }, "start")
-      .to('.upper', { attr: { d: "M8,2 L2,8" }, x: 1, duration: 0.5, ease: "power2.inOut" }, "start")
+      .fromTo('#main-nav', { display: 'none', opacity: 0, filter: 'blur(10px)' }, { display: 'block', opacity: 1, duration: 0.5, filter: 'blur(0px)' }, "start")
+      .to('.upper', { attr: { d: "M8,8 L2,2" }, x: 1, duration: 0.5, ease: "power2.inOut" }, "start")
       .to('.middle', { attr: { d: "M6,5 L6,5" }, duration: 0.3, ease: "power2.inOut" }, "start")
-      .to('.lower', { attr: { d: "M8,8 L2,2" }, x: 1, duration: 0.5, ease: "power2.inOut" }, "start")
+      .to('.lower', { attr: { d: "M8,2 L2,8" }, x: 1, duration: 0.5, ease: "power2.inOut" }, "start")
       .reverse();
 
     fogTimeline.current = new gsap.timeline({ paused: true })
       .fromTo('#overlay',
-        { boxShadow: "0 0 0 rgba(255, 255, 255, 0.0) inset" },
-        { boxShadow: "0 0 10em rgba(255, 255, 255, 1.0) inset", duration: 1, ease: "none" }, "start")
+        { backgroundColor: "rgba(255, 255, 255, 0.0)", boxShadow: "0 0 0 rgba(255, 255, 255, 0.0) inset", display: "none" },
+        { backgroundColor: "rgba(255, 255, 255, 0.2)", boxShadow: "0 0 10em rgba(255, 255, 255, 1.0) inset", display: "flex", duration: 1, ease: "none" }, "start")
       .fromTo('#overlay',
         { backdropFilter: 'blur(0px)' },
         { backdropFilter: 'blur(5px)', duration: 1.5, ease: "none" }, "start")
       .reverse();
+
+
+    // svg = document.querySelector("#draw-container");
+    // mask = document.querySelector("#draw-mask");
+    // point = svg.createSVGPoint();
+    // polyline = document.querySelector("#poly" + polylineCount);
+
+    svgMask = generateInitialMask();
 
   }, []);
 
@@ -65,13 +85,122 @@ function App() {
   const toggleMenu = () => {
     menuTimeline.current.reversed(!menuTimeline.current.reversed());
     fogTimeline.current.reversed(!fogTimeline.current.reversed());
+    gsap.getProperty("#overlay", "pointerEvents") === "none" ? gsap.set("#overlay", { pointerEvents: "auto" }) : gsap.set("#overlay", { pointerEvents: "none" });
   };
+
+  const generateInitialMask = () => {
+    return `
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <rect width="100%" height="100%" fill="white" />
+      </svg>
+    `;
+  };
+
+  const onPointerDown = () => {
+    isPointerDown = true;
+    currentPolyline = [];
+  };
+
+  const onPointerUp = () => {
+    isPointerDown = false;
+    if (currentPolyline.length > 0) {
+      polylines.push(currentPolyline);
+    }
+  };
+
+  const onPointerMove = (e) => {
+    if (isPointerDown) {
+      drawLine(e);
+    }
+  };
+
+  const drawLine = (e) => {
+    const newPoint = { x: e.clientX, y: e.clientY };
+    currentPolyline.push(newPoint);
+    updateMask();
+  };
+
+  const updateMask = () => {
+    const newMask = generateMask([...polylines, currentPolyline]);
+    svgMask = newMask;
+    applyMask();
+  };
+
+  const generateMask = (lines) => {
+    const svgHeader = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+    `;
+    const svgFooter = `
+      </svg>
+    `;
+
+    const polylineElements = lines.map((line, index) => {
+      const points = line.map(({ x, y }) => `${x},${y}`).join(' ');
+      return `<polyline key="${index}" fill="transparent" stroke="white" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" points="${points}" />`;
+    }).join('');
+
+    return svgHeader + polylineElements + svgFooter;
+  };
+
+  const applyMask = () => {
+    document.getElementById('overlay').style.mask = `url(data:image/svg+xml;utf8,${encodeURIComponent(svgMask)}) 0/100% 100%, linear-gradient(#000, #000)`;
+    document.getElementById('overlay').style.WebkitMask = `url(data:image/svg+xml;utf8,${encodeURIComponent(svgMask)}) 0/100% 100%, linear-gradient(#000, #000)`;
+  };
+
+  // const onPointerDown = (e) => {
+  //   isPointerDown = true;
+  //   createPolyline();
+  // }
+
+  // const onPointerUp = (e) => {
+  //   isPointerDown = false;
+  // }
+
+  // const onPointerMove = (e) => {
+  //   if (isPointerDown) {
+  //     drawLine(e);
+  //     // gsap.to("#overlay", {
+  //     //   WebkitMask: `url(#draw-mask) 0/100% 100%,
+  //     //     linear-gradient(#fff,#fff)`,
+  //     //   WebkitMaskComposite: `destination-out`,
+  //     //   mask: `url(#draw-mask) 0/100% 100%, 
+  //     //     linear-gradient(#fff,#fff)`,
+  //     //   maskComposite: `exclude`
+  //     // }, console.log("hey"));
+  //   }
+  // };
+
+  // function createPolyline() {
+  //   polylineCount++;
+  //   // console.log(polylineCount);
+  //   var poly = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+  //   poly.setAttribute("id", "poly" + polylineCount);
+  //   poly.setAttribute("fill", "transparent");
+  //   poly.setAttribute("stroke", "black");
+  //   poly.setAttribute("stroke-width", "40");
+  //   poly.setAttribute("stroke-linecap", "round");
+  //   poly.setAttribute("stroke-linejoin", "round");
+  //   poly.setAttribute("points", "");
+  //   mask.appendChild(poly);
+  //   polyline = document.querySelector("#poly" + polylineCount);
+  // }
+
+  // function drawLine(e) {
+  //   // console.log("mouse location:", evt.clientX, evt.clientY);
+  //   point = svg.createSVGPoint();
+  //   point.x = (e.clientX);
+  //   point.y = (e.clientY);
+  //   // console.log(point);
+  //   polyline.points.appendItem(point);
+  //   // console.log(polyline.points);
+  // }
+
 
 
   return (
     <div id="main">
-      <Suspense id="suspense" fallback={<img id="loading" src={loadingGIF} alt="loading animation gif"/>}>
-        <Canvas camera={{ position: [0, 0.5, 6], fov: 65 }}>
+      <Suspense id="suspense" fallback={<img id="loading" src={loadingGIF} alt="loading animation gif" />}>
+        <Canvas camera={window.innerWidth < window.innerHeight ? { position: [3.5, 1.5, 4.75], fov: 65 } : { position: [0, 0.5, 6], fov: 65 }}>
 
           <Tub />
           <Water />
@@ -95,38 +224,54 @@ function App() {
             enableRotate={state === "main" ? true : false}
             // minPolarAngle={state === "main" ? Math.PI / 4 : 0}
             maxPolarAngle={Math.PI / 1.8}
-            minAzimuthAngle={-Math.PI / 4}
-            maxAzimuthAngle={Math.PI / 4}
+          // minAzimuthAngle={-Math.PI / 2}
+          // maxAzimuthAngle={Math.PI / 2}
           />
 
           <Rig state={state} />
           <Environment preset="warehouse" background blur={1} />
         </Canvas>
 
-        <div id="overlay">
+        <div id="container">
+          {/* <h1 id="title">Miya Fordah</h1> */}
+
+
+          <div id="overlay" onPointerDown={(e) => { onPointerDown(e) }} onPointerUp={(e) => { onPointerUp(e) }} onPointerMove={(e) => { onPointerMove(e) }}></div>
+          {/* <svg id="draw-container" style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%'
+            }}>
+              <defs>
+                <mask id="draw-mask" >
+                  <rect width="100%" height="100%" fill="white" />
+                </mask>
+              </defs>
+              <rect width="100%" height="100%" fill="rgba(255, 255, 255, 0.2)" mask= "url(#draw-mask)"/>
+            </svg> */}
+
           <img id="logo" src={logoSVG} alt="MF logo" onPointerDown={(e) => {
             e.stopPropagation();
             menuTimeline.current.reverse();
             fogTimeline.current.reverse();
             setState("main");
           }} />
-          <nav id="main-nav">
+
+          {/* <nav id="main-nav">
             <a onPointerDown={() => {
-              setState("water");
               toggleMenu();
             }}>ABOUT</a><br />
 
             <a onPointerDown={() => {
-              setState("water");
               toggleMenu();
             }}>WORK</a><br />
 
             <a onPointerDown={() => {
-              setState("water");
               toggleMenu();
             }}>CONTACT</a>
-          </nav>
-          <svg viewBox="0 0 12 10" className="menu" height="2rem" width="2rem" onPointerDown={() => { toggleMenu(); }}>
+          </nav> */}
+
+          <svg className="menu" height="2rem" width="2rem" viewBox="0 0 12 10" onPointerDown={() => { toggleMenu(); }}>
             <path d="M10,2 L2,2" className="upper line" />
             <path d="M2,5 L10,5" className="middle line" />
             <path d="M10,8 L2,8" className="lower line" />
